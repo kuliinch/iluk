@@ -1,32 +1,31 @@
-# Ulik
-This project is made by Alexander Kulinich (kuliinch)
-This is a gap-year project in which I learn C to develop a compiler for my programming language - Ulik
-> I don't expect this to be the best programming language in any sense, I didn't design it to be good at anything, only good to learn from during its development
+# Introduction
 
-## Building and running
+Welcome to the Ulik repository. Here I save the most recent progress made on the Ulikode Project. 
+This project is something I've wanted to do for ages, and that includes designing a programming language and creating its compiler.
+I've just started learning C to make this project possible, so in the process of making a new programming language, I'm learning another one.
+
+> Note: I do not expect this programming language to be at all competent. But I would gladly accept any feedback - as this project was intended to be a learnign opportunity.
+
+I make this repository public to share my journey with other people and - maybe - others will feel motivated to do so, or look at the commit history and learn something cool.
+
+I am considering making a small wiki on the PL's design and usage, but this will be at the later stages of development.
+
+# Building and running
 
 To _build_ the project you simply have to compile all the C files located in this directory
 
 ```terminal
-gcc [files]
+gcc *.c -o ulik
 ```
 
-To compile your Ulik code, simply run the compiler binary and specify the $$.ulik$$ files you want to compile
+To compile your Ulik code, simply run the compiler binary and specify the ```.ulik``` files you want to compile
 
 ```terminal
 ./compile [.ulik files]
 ```
 
-## TODO:
-    1. Create a much simpler process of building and running the compiler
-    2. Write down requirements and features
-    3. Other stuff
+# Future improvements
 
-## To the code readers:
+This page will be a lot more elaborate and rich, but for now I need to stop procrastinating and actually make something.
 
-The structure of the Ilukode language compiler will look as followed:
-	1. lexer.c -> Generates tokens from the source code
-	2. parser.c -> Produces a parse tree/AST from the generated tokens
-	3. seman.c -> Performs a semantic analysis of the AST
-	4. irgen.c -> Generates intermediate representation (using LLVM)
-	5. ogen.c -> Generates object file/s that can be executed by the user
+Happy programming!
