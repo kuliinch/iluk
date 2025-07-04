@@ -5,10 +5,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "lexer.h"
 
-//#include "lexer.h"
-
-int ulicheck(const char* fn){
+int ilucheck(const char* fn){
 	size_t len = strlen(fn);
 
 	if( len > 5 && len < 100 && strcmp ( fn + len - 5, ".iluk" ) == 0 ) return 1;
@@ -21,6 +20,7 @@ void compile(const char* fn){
 	 * Parser 
 	 * Etc
 	 */
+	lex(fn);
 }
 
 int main(int argc, char* argv[]){
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
 	if(argc < 2) printf("[+] [INFO] No files given to compile\n");
 	else{
 		for(int i = 1; i < argc; i++){
-			if(ulicheck(argv[i]) == 1){ // Also makes sure fn is under 100 chars
+			if(ilucheck(argv[i]) == 1){ // Also makes sure fn is under 100 chars
 				FILE *file = fopen(argv[i],"r");
 				if (file){
 					strcpy(fns[j],argv[i]); 
@@ -46,4 +46,6 @@ int main(int argc, char* argv[]){
 		}
 		for(int i = 0; i < j; i++) compile(fns[i]);
 	}
+
+	printf("Done!\n");
 }
