@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to the Ulik repository. Here I save the most recent progress made on the Ulikode Project. 
+Welcome to the Iluk repository. Here I save the most recent progress made on the Ilukode Project. 
 This project is something I've wanted to do for ages, and that includes designing a programming language and creating its compiler.
 I've just started learning C to make this project possible, so in the process of making a new programming language, I'm learning another one.
 
@@ -15,13 +15,13 @@ I am considering making a small wiki on the PL's design and usage, but this will
 To _build_ the project you simply have to compile all the C files located in this directory
 
 ```terminal
-gcc *.c -o ulik
+gcc *.c -o iluk
 ```
 
-To compile your Ulik code, simply run the compiler binary and specify the ```.ulik``` files you want to compile
+To compile your Ulik code, simply run the compiler binary and specify the ```.iluk``` files you want to compile
 
 ```terminal
-./compile [.ulik files]
+./iluk [.iluk files]
 ```
 
 # Future improvements
