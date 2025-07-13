@@ -1,3 +1,2 @@
-Hi Po
-"Hello"
-"Hi \"Po\""
+print("Hello")
+string welcome = substring(3,"Hello \"World\"");

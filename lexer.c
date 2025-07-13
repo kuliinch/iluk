@@ -17,54 +17,63 @@ typedef struct{
 Lexer load(FILE *file){
 	fseek(file,0,SEEK_END);
 	long res = ftell(file);
-	printf("[+] [DEBUG] ftell result: %ld\n",res);
 	fclose(file);
-	Lexer l = {malloc(res),res,0}; //Uncertainty with +1 for terminator
+	Lexer l = {malloc(res),res,0}; 
 	return l;
 }
 
-void eval(const char* unproc) {
+void eval(const char* unprocessed_t,const int* size, const int* previous_mood) {
 	// TODO Tokenize and add token to array (TODO where?)
 	printf("[+] [DEBUG] Eval has been called\n");
+	int n = *size;
+	printf("[+] [DEBUG] Last buffer (until \\0):\n\t");
+	for(int i = 0; i < n; i++) printf("%c",*(unprocessed_t+i));
+	printf("\n");
 }
 
-int typecheck(char* chr, int* m){
-	char ch = *chr;
-	//Use ctype.h 
-	
-	if(m == NULL){
-		if(isalpha(ch)) return LETTER;
-		else if(isdigit(ch)) return NUMBER;
-		else if(ispunct(ch)) return SYMBOL;
-		else if(isspace(ch)) return SPACE;
-		return NOTHING;
+int typecheck(char* char_p, int* mood_p){
+	char ch = *char_p; int previous_mood = *mood_p;
+	printf("[+] [DEBUG]\n\t%c %p\n\t%d %p\n",ch,char_p,previous_mood,mood_p);
+	//TODO fix issue when mutliple symbols are together, such as a quote inside a parenthesis	
+	switch(previous_mood){
+		case QUOTE:
+			if(ch=='\\'){
+				*mood_p = QUOTE_ESCAPE; 
+				return QUOTE_ESCAPE;
+			}
+			else if(ch=='"'){
+				*mood_p = QUOTE_CLOSE;
+				return QUOTE_CLOSE;
+			}
+		case CHAR:
+			if(ch=='\\'){
+				*mood_p = CHAR_ESCAPE;
+				return CHAR_ESCAPE;
+			}
+			else if(ch=='\''){
+				*mood_p = CHAR_CLOSE;
+				return CHAR_CLOSE;
+			}
+		case QUOTE_ESCAPE:
+			*mood_p = QUOTE_ESCAPED;
+			return QUOTE_ESCAPED;
+		case CHAR_ESCAPE:
+			*mood_p = CHAR_ESCAPED;
+			return CHAR_ESCAPED;
+		case QUOTE_ESCAPED:
+			*mood_p = QUOTE;
+			return QUOTE;
+		case CHAR_ESCAPED:
+			*mood_p = CHAR_CLOSE;
+			return CHAR_CLOSE;
+		default:
+			if(isalpha(ch)) return ALPHA;
+			else if(isdigit(ch)) return DIGIT;
+			else if(ispunct(ch)) return SYMBOL;
+			else if(isspace(ch)) return SPACE;
+			else return NOTHING;
+		}
 	}
-	int pmo = *m;
-	if(pmo==OD) return OD;
-	else if (pmo==OS) return OS;
-	// TODO If the character is an escape character ('\') do something different
-	if(ch=='\\'){
-		if(pmo==OD) return ODE;
-		else if(pmo==ODE) return ODE2;
-		else if(pmo==ODE2) return ODE;
-		else if(pmo==OS) return OSE;
-		else if(pmo==OSE) return OSE2;
-		else return 999;
-	}
-	else if(ch=='"'){
-		if(pmo==OD) return CD;
-		else if(pmo==ODE) return ODE2;
-		else if(pmo==ODE2) return CD; 
-		else return OD;
-	}
-	else if(ch=='\''){
-		if(pmo==OS) return CS;
-		else if(pmo==OSE) return OSE2;
-		else if(pmo==OSE2) return CS; 
-		else return OS;
-	}
-	return SYMBOL;
-}	
 
 void lex(const char* fn){ // TODO return token array pointer and size 
 	FILE *file = fopen(fn,"r");
@@ -74,43 +83,35 @@ void lex(const char* fn){ // TODO return token array pointer and size
 		printf("[+] [ERROR] Cannot allocate memory for %s\n",fn);
 	}
 	else{
-		printf("[+] [DEBUG] Lexer's buff is: %p\n",lex.buff);
-		char curr = lex.buff[0];
-		char* currp = &curr;
-		int mood = typecheck(currp, NULL); 
-		int* moodp = &mood;
-			// Mood keeps track of the previous char that has been shown
-			// 0 = nothing, 1 = letter, 2 = number, 3 = symbol, 4 = space/nl
-			// TODO add more types for escape sequences, literals, comments, etc.
-		int type = 0;
-		char last[100]; // WARNING Unprocessed token max size 
+		char current; 
+		char* current_pointer = &current;
+		int mood;
+		int* mood_pointer = &mood;
+		mood = typecheck(current_pointer,mood_pointer);
+		int type; 
+		char last[100]; // Max unprocessed token size
 		int lastp = 0;
+		int* lastpp = &lastp;
 		do{
-			curr = lex.buff[lex.pos];
+			current = lex.buff[lex.pos];
 			printf("[+] [DEBUG] lex.pos = %d\n",lex.pos);
-			printf("[+] [DEBUG] Current char: %c\n",curr);
+			printf("[+] [DEBUG] Current char: %c\n",current);
 			
-			//Lexing, assinging ints (with enum) as we go along
-			/* If the character is of type X and mood has not changed, continue
-			 * Once the mood has changed, evaluate the last token*/		
-			type = typecheck(currp,moodp);
+			type = typecheck(current_pointer,mood_pointer);
 
 			printf("[+] [DEBUG] Curr type: %d\n",type);
 
 			if(type==mood){
-				last[lastp] = curr;
+				last[lastp] = current;
 				lastp++;
 			}
 			else{
-				printf("[+] [DEBUG] Mood change!, last = %s\n",last);
-				// Evaluate and tokenize, then empty last
 				last[lastp] = '\0';
-				eval(last);
-				last[0] = curr;
-				last[1] = '\0';
+				eval(last,lastpp,mood_pointer);
+				last[0] = current;
 				lastp = 1;
 			}
-
+			mood = type;	
 			lex.pos++;
 		} while(lex.pos < lex.bufflen); 
 	}
