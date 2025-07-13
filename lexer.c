@@ -24,7 +24,6 @@ Lexer load(FILE *file){
 
 void eval(const char* unprocessed_t,const int* size, const int* previous_mood) {
 	// TODO Tokenize and add token to array (TODO where?)
-	printf("[+] [DEBUG] Eval has been called\n");
 	int n = *size;
 	printf("[+] [DEBUG] Last buffer (until \\0):\n\t");
 	for(int i = 0; i < n; i++) printf("%c",*(unprocessed_t+i));
