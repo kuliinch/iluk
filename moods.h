@@ -1,0 +1,17 @@
+typedef enum {
+	//Moods
+	NOTHING,
+	ALPHA,
+	DIGIT,
+	SYMBOL,
+	SPACE,
+	
+	QUOTE = 30, 
+	QUOTE_ESCAPE,
+	QUOTE_ESCAPED,
+	QUOTE_CLOSE,
+	CHAR,
+	CHAR_ESCAPE,
+	CHAR_ESCAPED,
+	CHAR_CLOSE,
+} moods;
