@@ -8,8 +8,6 @@ I've just started learning C to make this project possible, so in the process of
 
 I make this repository public to share my journey with other people and - maybe - others will feel motivated to do so, or look at the commit history and learn something cool.
 
-I am considering making a small wiki on the PL's design and usage, but this will be at the later stages of development.
-
 # Building and running
 
 To _build_ the project you simply have to compile all the C files located in this directory
@@ -24,8 +22,16 @@ To compile your Ulik code, simply run the compiler binary and specify the ```.il
 ./iluk [.iluk files]
 ```
 
-# Future improvements
+# TODO
 
-This page will be a lot more elaborate and rich, but for now I need to stop procrastinating and actually make something.
+- Design the programming language (syntax, features, etc) and **document** them
+- Create a documentation/wiki
+- Finish making the lexer - working on tokenisation after designing programming language
+- Every other step into making a compiler.
+- Learn about LLVM (and IR)
+
+Once the first prototype for the compiler has been made, these will be introduced:
+- Multithreadding
+- Intermittent syntax reading
 
 Happy programming!
