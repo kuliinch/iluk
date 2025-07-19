@@ -4,6 +4,7 @@ typedef enum {
 	ALPHA,
 	DIGIT,
 	SYMBOL,
+	SYMBOL_ALT,
 	SPACE,
 	
 	QUOTE = 30, 
