@@ -1,2 +1,3 @@
+mylist = [u"अ,ब,क"]
 print("Hello")
 string welcome = substring(3,"Hello \"World\"");

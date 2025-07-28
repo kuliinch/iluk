@@ -12,6 +12,11 @@ typedef struct{
 	size_t pos;
 } Lexer;
 
+typedef struct{
+	const char* lexeme;
+	const int token;
+} Token;
+
 Lexer load(FILE *file){
 	fseek(file,0,SEEK_END);
 	long res = ftell(file);
@@ -20,18 +25,14 @@ Lexer load(FILE *file){
 	return l;
 }
 
-void eval(const char* unprocessed_t,const int* size, const int* previous_mood) {
-	// TODO Tokenize and add token to array (TODO where?)
-	int n = *size;
-	printf("\t[+] [DEBUG] eval called! \n\t----\n\t");
-	for(int i = 0; i < n; i++) printf("%c",*(unprocessed_t+i));
-	printf("\n\t----\n");
+void eval(const char* lexeme, const Token* token_buff, const size_t token_index) {
+	/* TOKENIZER
+	 * Uses the same buffer as the file to store the tokens
+	 * Needs a hashmap for variable names
+	 */
+	printf("[+] [DEBUG] eval called! Evaluating --%s--\n",lexeme);
 }
 
-static inline int setmood(int* mood_p, int state) {
-    *mood_p = state;
-    return state;
-}
 
 int typecheck(char* char_p, int* mood_p){
 	char ch = *char_p; int previous_mood = *mood_p;
@@ -82,7 +83,14 @@ int typecheck(char* char_p, int* mood_p){
 					case '\'':
 						return CHAR;
 					default:
-						return SYMBOL;
+						switch(previous_mood){
+							case SYMBOL:
+								return SYMBOL_ALT;
+							case SYMBOL_ALT:
+								return SYMBOL;
+							default:
+								return SYMBOL;
+						}
 				}
 			}
 			else if(isspace(ch)) return SPACE;
@@ -93,37 +101,35 @@ int typecheck(char* char_p, int* mood_p){
 void lex(const char* fn){ // TODO return token array pointer and size 
 	FILE *file = fopen(fn,"r");
 	Lexer lex = load(file); 
+	Token* token_buff = malloc(sizeof(Token)*100);
+	size_t token_pos = 0;
+	char current; char* current_pointer = &current;
+	int mood; int* mood_pointer = &mood;
+	int type; 
+	char last[100]; // Max unprocessed token size
+	int lastp = 0; 
 
-	if( lex.buff == NULL){
-		printf("[+] [ERROR] Cannot allocate memory for %s\n",fn);
-	}
-	else{
-		char current; 
-		char* current_pointer = &current;
-		int mood;
-		int* mood_pointer = &mood;
+	if( lex.buff != NULL && token_buff != NULL){
 		mood = typecheck(current_pointer,mood_pointer);
-		int type; 
-		char last[100]; // Max unprocessed token size
-		int lastp = 0;
-		int* lastpp = &lastp;
 		do{
 			current = lex.buff[lex.pos];
 			type = typecheck(current_pointer,mood_pointer);
-
-			printf("[+] [DEBUG] Current char and type:\t%c\t%d\n",current,type);
 			if(type==mood){
 				last[lastp] = current;
 				lastp++;
 			}
 			else{
 				last[lastp] = '\0';
-				eval(last,lastpp,mood_pointer);
+				eval(last,token_buff,token_pos);
+				token_pos++;
 				last[0] = current;
 				lastp = 1;
 			}
 			mood = type;	
 			lex.pos++;
 		} while(lex.pos < lex.bufflen); 
+	}
+	else{
+		printf("[+] [ERROR] Cannot allocate memory.");
 	}
 }
